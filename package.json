@@ -1,0 +1,42 @@
+{
+  "name": "bs-msw",
+  "version": "0.1.0",
+  "description": "Mock Service Worker (MSW) bindings for BuckleScript in Reason",
+  "repository": "https://github.com/jihchi/bs-msw.git",
+  "homepage": "https://github.com/jihchi/bs-msw",
+  "bugs": {
+    "url": "https://github.com/jihchi/bs-msw/issues"
+  },
+  "scripts": {
+    "build": "bsb -make-world",
+    "clean": "bsb -clean-world",
+    "prepublishOnly": "npm run build",
+    "pretest": "npm run build",
+    "start": "npm run build -- -w",
+    "test": "jest"
+  },
+  "keywords": [
+    "BuckleScript",
+    "ReasonML",
+    "bindings",
+    "mock",
+    "mocking",
+    "msw"
+  ],
+  "author": "Jihchi Lee <achi@987.tw>",
+  "license": "MIT",
+  "files": [
+    "/src/**/*.re",
+    "bsconfig.json"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "@glennsl/bs-jest": "^0.5.1",
+    "bs-platform": "^7.2.2",
+    "coveralls": "^3.0.13",
+    "msw": "^0.16.0"
+  },
+  "peerDependencies": {
+    "msw": "^0.16.0"
+  }
+}
