@@ -34,17 +34,10 @@
     "@glennsl/bs-jest": "^0.5.1",
     "bs-fetch": "^0.5.2",
     "bs-platform": "^7.2.2",
-    "coveralls": "^3.0.13",
     "msw": "^0.16.0",
     "node-fetch": "^2.6.0"
   },
   "peerDependencies": {
     "msw": "^0.16.0"
-  },
-  "jest": {
-    "automock": false,
-    "setupFiles": [
-      "<rootDir>/setup.jest.js"
-    ]
   }
 }
