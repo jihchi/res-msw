@@ -1,51 +1,74 @@
 module Base = {
-  type t;
-
   type request = {params: Js.Dict.t(string)};
   type response;
+  type context;
+
   type responseTransformer;
   type completeTransformer;
-  type responseResolver = (request, response, t) => completeTransformer;
+  type responseResolver = (request, response, context) => completeTransformer;
 
-  let makeResponse:
-    (response, array(responseTransformer)) => completeTransformer = [%raw
+  let mock: (array(responseTransformer), response) => completeTransformer = [%raw
     {|
-  function (response, transformers) {
+  function (transformers, response) {
       return response(...transformers);
   }
 |}
   ];
 
-  [@bs.send] external status: (t, int) => responseTransformer = "status";
-  [@bs.send] external set: (t, string, string) => responseTransformer = "set";
-  [@bs.send] external delay: (t, int) => responseTransformer = "delay";
-  [@bs.send] external fetch: (t, request) => responseTransformer = "fetch";
+  [@bs.send]
+  external rawStatus: (context, int) => responseTransformer = "status";
+  let status = (code, ctx) => rawStatus(ctx, code);
+
+  [@bs.send]
+  external rawSet: (context, string, string) => responseTransformer = "set";
+  let set = (key, value, ctx) => rawSet(ctx, key, value);
+
+  [@bs.send]
+  external rawDelay: (context, int) => responseTransformer = "delay";
+  let delay = (ms, ctx) => rawDelay(ctx, ms);
+
+  [@bs.send]
+  external rawFetch: (context, request) => responseTransformer = "fetch";
+  let fetch = (req, ctx) => rawFetch(ctx, req);
 };
 
 module Rest = {
   include Base;
 
-  [@bs.module "msw"] [@bs.val] external rest: t = "rest";
+  [@bs.module "msw"] [@bs.val] external instance: context = "rest";
 
-  [@bs.send] external text: (t, string) => responseTransformer = "text";
-  [@bs.send] external json: (t, Js.Json.t) => responseTransformer = "json";
-  [@bs.send] external xml: (t, string) => responseTransformer = "xml";
+  [@bs.send]
+  external rawText: (context, string) => responseTransformer = "text";
+  let text = (text, ctx) => rawText(ctx, text);
+
+  [@bs.send]
+  external rawJson: (context, Js.Json.t) => responseTransformer = "json";
+  let json = (json, ctx) => rawJson(ctx, json);
+
+  [@bs.send] external rawXml: (context, string) => responseTransformer = "xml";
+  let xml = (xml, ctx) => rawXml(ctx, xml);
 };
 
 module GraphQL = {
   include Base;
 
-  [@bs.module "msw"] [@bs.val] external graphql: t = "graphql";
+  [@bs.module "msw"] [@bs.val] external instance: context = "graphql";
 
-  [@bs.send] external data: (t, Js.Json.t) => responseTransformer = "data";
   [@bs.send]
-  external errors: (t, array(Js.Json.t)) => responseTransformer = "errors";
+  external rawData: (context, Js.Json.t) => responseTransformer = "data";
+  let data = (json, ctx) => rawData(ctx, json);
+
+  [@bs.send]
+  external rawErrors: (context, array(Js.Json.t)) => responseTransformer =
+    "errors";
+  let errors = (errors, ctx) => rawErrors(ctx, errors);
 };
 
 type schemaAPI;
 type nodeServer;
 type requestHandler;
 
+/* service worker */
 [@bs.module "msw"] [@bs.variadic]
 external setupWorker: array(requestHandler) => schemaAPI = "setupWorker";
 
@@ -53,6 +76,7 @@ external setupWorker: array(requestHandler) => schemaAPI = "setupWorker";
 
 [@bs.send] external stop: (schemaAPI, unit) => unit = "stop";
 
+/* node server */
 [@bs.module "msw/node"] [@bs.variadic]
 external setupServer: array(requestHandler) => nodeServer = "setupServer";
 
@@ -60,39 +84,56 @@ external setupServer: array(requestHandler) => nodeServer = "setupServer";
 
 [@bs.send] external close: (nodeServer, unit) => unit = "close";
 
+/* Rest request handlers */
 [@bs.send]
-external get: (Rest.t, string, Rest.responseResolver) => requestHandler =
+external rawGet:
+  (Rest.context, string, Rest.responseResolver) => requestHandler =
   "get";
+let get = (url, resolver, ctx) => rawGet(ctx, url, resolver);
 
 [@bs.send]
-external post: (Rest.t, string, Rest.responseResolver) => requestHandler =
+external rawPost:
+  (Rest.context, string, Rest.responseResolver) => requestHandler =
   "post";
+let post = (url, resolver, ctx) => rawPost(ctx, url, resolver);
 
 [@bs.send]
-external put: (Rest.t, string, Rest.responseResolver) => requestHandler =
+external rawPut:
+  (Rest.context, string, Rest.responseResolver) => requestHandler =
   "put";
+let put = (url, resolver, ctx) => rawPut(ctx, url, resolver);
 
 [@bs.send]
-external patch: (Rest.t, string, Rest.responseResolver) => requestHandler =
+external rawPatch:
+  (Rest.context, string, Rest.responseResolver) => requestHandler =
   "patch";
+let patch = (url, resolver, ctx) => rawPatch(ctx, url, resolver);
 
 [@bs.send]
-external delete: (Rest.t, string, Rest.responseResolver) => requestHandler =
+external rawDelete:
+  (Rest.context, string, Rest.responseResolver) => requestHandler =
   "delete";
+let delete = (url, resolver, ctx) => rawDelete(ctx, url, resolver);
 
 [@bs.send]
-external options: (Rest.t, string, Rest.responseResolver) => requestHandler =
+external rawOptions:
+  (Rest.context, string, Rest.responseResolver) => requestHandler =
   "options";
+let options = (url, resolver, ctx) => rawOptions(ctx, url, resolver);
 
+/* GraphQL request handlers */
 [@bs.send]
-external query: (GraphQL.t, string, GraphQL.responseResolver) => requestHandler =
+external rawQuery:
+  (GraphQL.context, string, GraphQL.responseResolver) => requestHandler =
   "query";
+let query = (url, resolver, ctx) => rawQuery(ctx, url, resolver);
 
 [@bs.send]
-external mutation:
-  (GraphQL.t, string, GraphQL.responseResolver) => requestHandler =
+external rawMutation:
+  (GraphQL.context, string, GraphQL.responseResolver) => requestHandler =
   "mutation";
+let mutation = (url, resolver, ctx) => rawMutation(ctx, url, resolver);
 
-let rest = Rest.rest;
+let rest = Rest.instance;
 
-let graphql = GraphQL.graphql;
+let graphql = GraphQL.instance;

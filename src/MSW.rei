@@ -1,48 +1,42 @@
 module Rest: {
-  type t;
-
   type request = {params: Js.Dict.t(string)};
   type response;
+  type context;
+
   type responseTransformer;
   type completeTransformer;
-  type responseResolver = (request, response, t) => completeTransformer;
+  type responseResolver = (request, response, context) => completeTransformer;
 
-  let makeResponse:
-    (response, array(responseTransformer)) => completeTransformer;
+  let mock: (array(responseTransformer), response) => completeTransformer;
 
-  let status: (t, int) => responseTransformer;
-  let set: (t, string, string) => responseTransformer;
-  let delay: (t, int) => responseTransformer;
-  let fetch: (t, request) => responseTransformer;
+  let status: (int, context) => responseTransformer;
+  let set: (string, string, context) => responseTransformer;
+  let delay: (int, context) => responseTransformer;
+  let fetch: (request, context) => responseTransformer;
 
-  let text: (t, string) => responseTransformer;
-  let json: (t, Js.Json.t) => responseTransformer;
-  let xml: (t, string) => responseTransformer;
-
-  let rest: t;
+  let text: (string, context) => responseTransformer;
+  let json: (Js.Json.t, context) => responseTransformer;
+  let xml: (string, context) => responseTransformer;
 };
 
 module GraphQL: {
-  type t;
-
   type request = {params: Js.Dict.t(string)};
   type response;
+  type context;
+
   type responseTransformer;
   type completeTransformer;
-  type responseResolver = (request, response, t) => completeTransformer;
+  type responseResolver = (request, response, context) => completeTransformer;
 
-  let makeResponse:
-    (response, array(responseTransformer)) => completeTransformer;
+  let mock: (array(responseTransformer), response) => completeTransformer;
 
-  let status: (t, int) => responseTransformer;
-  let set: (t, string, string) => responseTransformer;
-  let delay: (t, int) => responseTransformer;
-  let fetch: (t, request) => responseTransformer;
+  let status: (int, context) => responseTransformer;
+  let set: (string, string, context) => responseTransformer;
+  let delay: (int, context) => responseTransformer;
+  let fetch: (request, context) => responseTransformer;
 
-  let data: (t, Js.Json.t) => responseTransformer;
-  let errors: (t, array(Js.Json.t)) => responseTransformer;
-
-  let graphql: t;
+  let data: (Js.Json.t, context) => responseTransformer;
+  let errors: (array(Js.Json.t), context) => responseTransformer;
 };
 
 type schemaAPI;
@@ -61,22 +55,24 @@ let listen: (nodeServer, unit) => unit;
 
 let close: (nodeServer, unit) => unit;
 
-let get: (Rest.t, string, Rest.responseResolver) => requestHandler;
+let get: (string, Rest.responseResolver, Rest.context) => requestHandler;
 
-let post: (Rest.t, string, Rest.responseResolver) => requestHandler;
+let post: (string, Rest.responseResolver, Rest.context) => requestHandler;
 
-let put: (Rest.t, string, Rest.responseResolver) => requestHandler;
+let put: (string, Rest.responseResolver, Rest.context) => requestHandler;
 
-let patch: (Rest.t, string, Rest.responseResolver) => requestHandler;
+let patch: (string, Rest.responseResolver, Rest.context) => requestHandler;
 
-let delete: (Rest.t, string, Rest.responseResolver) => requestHandler;
+let delete: (string, Rest.responseResolver, Rest.context) => requestHandler;
 
-let options: (Rest.t, string, Rest.responseResolver) => requestHandler;
+let options: (string, Rest.responseResolver, Rest.context) => requestHandler;
 
-let query: (GraphQL.t, string, GraphQL.responseResolver) => requestHandler;
+let query:
+  (string, GraphQL.responseResolver, GraphQL.context) => requestHandler;
 
-let mutation: (GraphQL.t, string, GraphQL.responseResolver) => requestHandler;
+let mutation:
+  (string, GraphQL.responseResolver, GraphQL.context) => requestHandler;
 
-let rest: Rest.t;
+let rest: Rest.context;
 
-let graphql: GraphQL.t;
+let graphql: GraphQL.context;
