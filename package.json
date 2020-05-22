@@ -35,10 +35,10 @@
     "@glennsl/bs-jest": "^0.5.1",
     "bs-fetch": "^0.5.2",
     "bs-platform": "^7.2.2",
-    "msw": "^0.16.0",
+    "msw": "^0.17.0",
     "node-fetch": "^2.6.0"
   },
   "peerDependencies": {
-    "msw": "^0.16.0"
+    "msw": "^0.17.0"
   }
 }
