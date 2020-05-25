@@ -20,20 +20,23 @@ module Rest: {
 };
 
 module GraphQL: {
-  type request = {params: Js.Dict.t(string)};
+  type request('a) = {
+    variables: Js.t({..} as 'a),
+    params: Js.Dict.t(string),
+  };
   type response;
   type context;
 
   type responseTransformer;
   type completeTransformer;
-  type responseResolver = (request, response, context) => completeTransformer;
+  type responseResolver('a) = (request('a), response, context) => completeTransformer;
 
   let mock: (array(responseTransformer), response) => completeTransformer;
 
   let status: (int, context) => responseTransformer;
   let set: (string, string, context) => responseTransformer;
   let delay: (int, context) => responseTransformer;
-  let fetch: (request, context) => responseTransformer;
+  let fetch: (request('a), context) => responseTransformer;
 
   let data: (Js.Json.t, context) => responseTransformer;
   let errors: (array(Js.Json.t), context) => responseTransformer;
@@ -68,10 +71,10 @@ let delete: (string, Rest.responseResolver, Rest.context) => requestHandler;
 let options: (string, Rest.responseResolver, Rest.context) => requestHandler;
 
 let query:
-  (string, GraphQL.responseResolver, GraphQL.context) => requestHandler;
+  (string, GraphQL.responseResolver('a), GraphQL.context) => requestHandler;
 
 let mutation:
-  (string, GraphQL.responseResolver, GraphQL.context) => requestHandler;
+  (string, GraphQL.responseResolver('a), GraphQL.context) => requestHandler;
 
 let rest: Rest.context;
 

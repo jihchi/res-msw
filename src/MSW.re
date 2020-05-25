@@ -1,4 +1,4 @@
-module Base = {
+module Rest = {
   type request = {params: Js.Dict.t(string)};
   type response;
   type context;
@@ -30,10 +30,6 @@ module Base = {
   [@bs.send]
   external rawFetch: (context, request) => responseTransformer = "fetch";
   let fetch = (req, ctx) => rawFetch(ctx, req);
-};
-
-module Rest = {
-  include Base;
 
   [@bs.module "msw"] [@bs.val] external instance: context = "rest";
 
@@ -50,7 +46,41 @@ module Rest = {
 };
 
 module GraphQL = {
-  include Base;
+  type request('a) = {
+    variables: Js.t({..} as 'a),
+    params: Js.Dict.t(string),
+  };
+
+  type response;
+  type context;
+
+  type responseTransformer;
+  type completeTransformer;
+  type responseResolver('a) = (request('a), response, context) => completeTransformer;
+
+  let mock: (array(responseTransformer), response) => completeTransformer = [%raw
+    {|
+  function (transformers, response) {
+      return response(...transformers);
+  }
+|}
+  ];
+
+  [@bs.send]
+  external rawStatus: (context, int) => responseTransformer = "status";
+  let status = (code, ctx) => rawStatus(ctx, code);
+
+  [@bs.send]
+  external rawSet: (context, string, string) => responseTransformer = "set";
+  let set = (key, value, ctx) => rawSet(ctx, key, value);
+
+  [@bs.send]
+  external rawDelay: (context, int) => responseTransformer = "delay";
+  let delay = (ms, ctx) => rawDelay(ctx, ms);
+
+  [@bs.send]
+  external rawFetch: (context, request('a)) => responseTransformer = "fetch";
+  let fetch = (req, ctx) => rawFetch(ctx, req);
 
   [@bs.module "msw"] [@bs.val] external instance: context = "graphql";
 
@@ -124,13 +154,13 @@ let options = (url, resolver, ctx) => rawOptions(ctx, url, resolver);
 /* GraphQL request handlers */
 [@bs.send]
 external rawQuery:
-  (GraphQL.context, string, GraphQL.responseResolver) => requestHandler =
+  (GraphQL.context, string, GraphQL.responseResolver('a)) => requestHandler =
   "query";
 let query = (url, resolver, ctx) => rawQuery(ctx, url, resolver);
 
 [@bs.send]
 external rawMutation:
-  (GraphQL.context, string, GraphQL.responseResolver) => requestHandler =
+  (GraphQL.context, string, GraphQL.responseResolver('a)) => requestHandler =
   "mutation";
 let mutation = (url, resolver, ctx) => rawMutation(ctx, url, resolver);
 

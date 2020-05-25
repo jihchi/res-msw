@@ -184,19 +184,29 @@ Skip.describe("Service Worker", () => {
            |> Rest.mock([|ctx |> Rest.status(200), ctx |> Rest.text(body)|]);
          }),
       graphql
-      |> query("GetUserDetail", (_req, res, ctx) => {
+      |> query("GetUserDetail", (req, res, ctx) => {
            res
            |> GraphQL.mock([|
                 ctx |> GraphQL.status(200),
-                ctx |> GraphQL.data(Js.Dict.empty() |> Js.Json.object_),
+                ctx
+                |> GraphQL.data(
+                     Js.Dict.fromList([("name", req.variables##name)])
+                     |> Js.Json.object_,
+                   ),
               |])
          }),
       graphql
-      |> mutation("Logout", (_req, res, ctx) => {
+      |> mutation("Logout", (req, res, ctx) => {
            res
            |> GraphQL.mock([|
                 ctx |> GraphQL.status(200),
-                ctx |> GraphQL.data(Js.Dict.empty() |> Js.Json.object_),
+                ctx
+                |> GraphQL.data(
+                     Js.Dict.fromList([
+                       ("referrer", req.variables##referrer),
+                     ])
+                     |> Js.Json.object_,
+                   ),
               |])
          }),
       graphql
