@@ -1,5 +1,9 @@
 module.exports = {
   launch: {
-    headless: true,
+    devtools: false,
+  },
+  server: {
+    command: 'npm run dev',
+    port: 8080,
   },
 };

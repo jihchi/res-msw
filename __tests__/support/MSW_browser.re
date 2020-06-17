@@ -61,3 +61,15 @@ let worker =
             |])
        }),
   |]);
+
+worker->start();
+
+let injectToWindow = [%bs.raw
+  {|(worker) => {
+  window.bsmsw = {
+    worker,
+  }
+}|}
+];
+
+injectToWindow(worker);

@@ -8,6 +8,7 @@
     "url": "https://github.com/jihchi/bs-msw/issues"
   },
   "scripts": {
+    "dev": "webpack-dev-server",
     "build": "bsb -make-world",
     "clean": "bsb -clean-world",
     "format": "find ./src ./__tests__ -regex '.*\\.rei\\{0,1\\}' -exec bsrefmt --in-place '{}' \\;",
@@ -39,7 +40,10 @@
     "jest-puppeteer": "^4.4.0",
     "msw": "^0.19.3",
     "node-fetch": "^2.6.0",
-    "puppeteer": "^4.0.0"
+    "puppeteer": "^4.0.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.11.0"
   },
   "peerDependencies": {
     "msw": "^0.19.0"
