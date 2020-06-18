@@ -1,6 +1,6 @@
 {
   "name": "bs-msw",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Mock Service Worker (MSW) bindings for BuckleScript in Reason",
   "repository": "https://github.com/jihchi/bs-msw.git",
   "homepage": "https://github.com/jihchi/bs-msw",
