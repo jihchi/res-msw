@@ -18,5 +18,6 @@
   "warnings": {
     "error": "+101"
   },
+  "bsc-flags": ["-open Belt"],
   "refmt": 3
 }

@@ -19,6 +19,66 @@ describe('Service Worker', () => {
 
       expect(actual).toEqual({ status: 200, body: 'jihchi/bs-msw' });
     });
+
+    test('post works', async () => {
+      const actual = await page.evaluate(async () => {
+        const res = await fetch('https://api.github.com/repos/jihchi/bs-msw', {
+          method: 'POST',
+        });
+        const body = await res.text();
+        return { status: res.status, body };
+      });
+
+      expect(actual).toEqual({ status: 200, body: 'jihchi/bs-msw' });
+    });
+
+    test('put works', async () => {
+      const actual = await page.evaluate(async () => {
+        const res = await fetch('https://api.github.com/repos/jihchi/bs-msw', {
+          method: 'PUT',
+        });
+        const body = await res.text();
+        return { status: res.status, body };
+      });
+
+      expect(actual).toEqual({ status: 200, body: 'jihchi/bs-msw' });
+    });
+
+    test('patch works', async () => {
+      const actual = await page.evaluate(async () => {
+        const res = await fetch('https://api.github.com/repos/jihchi/bs-msw', {
+          method: 'PATCH',
+        });
+        const body = await res.text();
+        return { status: res.status, body };
+      });
+
+      expect(actual).toEqual({ status: 200, body: 'jihchi/bs-msw' });
+    });
+
+    test('delete works', async () => {
+      const actual = await page.evaluate(async () => {
+        const res = await fetch('https://api.github.com/repos/jihchi/bs-msw', {
+          method: 'DELETE',
+        });
+        const body = await res.text();
+        return { status: res.status, body };
+      });
+
+      expect(actual).toEqual({ status: 200, body: 'jihchi/bs-msw' });
+    });
+
+    test('options works', async () => {
+      const actual = await page.evaluate(async () => {
+        const res = await fetch('https://api.github.com/repos/jihchi/bs-msw', {
+          method: 'DELETE',
+        });
+        const body = await res.text();
+        return { status: res.status, body };
+      });
+
+      expect(actual).toEqual({ status: 200, body: 'jihchi/bs-msw' });
+    });
   });
 
   describe('GraphQL', () => {
