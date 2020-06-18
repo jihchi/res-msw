@@ -45,20 +45,42 @@ let worker =
             |])
        }),
     graphql
-    |> query("GetUserDetailError", (_req, res, ctx) => {
+    |> query("GetUserDetailError", (req, res, ctx) => {
+         let message = ("message", Js.Json.string("This is a mocked error: " ++ req.variables##name));
+         let location =
+           Js.Dict.fromList([
+             ("line", Js.Json.number(1.0)),
+             ("column", Js.Json.number(2.0)),
+           ]);
+         let locations = ("locations", Js.Json.objectArray([|location|]));
+
          res
          |> GraphQL.mock([|
               ctx |> GraphQL.status(200),
-              ctx |> GraphQL.errors([|Js.Dict.empty() |> Js.Json.object_|]),
-            |])
+              ctx
+              |> GraphQL.errors([|
+                   Js.Dict.fromList([message, locations]) |> Js.Json.object_,
+                 |]),
+            |]);
        }),
     graphql
-    |> mutation("LogoutError", (_req, res, ctx) => {
+    |> mutation("LogoutError", (req, res, ctx) => {
+         let message = ("message", Js.Json.string("This is a mocked error: "++ req.variables##referrer));
+         let location =
+           Js.Dict.fromList([
+             ("line", Js.Json.number(1.0)),
+             ("column", Js.Json.number(2.0)),
+           ]);
+         let locations = ("locations", Js.Json.objectArray([|location|]));
+
          res
          |> GraphQL.mock([|
               ctx |> GraphQL.status(200),
-              ctx |> GraphQL.errors([|Js.Dict.empty() |> Js.Json.object_|]),
-            |])
+              ctx
+              |> GraphQL.errors([|
+                   Js.Dict.fromList([message, locations]) |> Js.Json.object_,
+                 |]),
+            |]);
        }),
   |]);
 

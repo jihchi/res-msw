@@ -50,5 +50,94 @@ describe('Service Worker', () => {
         body: '{"data":{"name":"jihchi/bs-msw"}}',
       });
     });
+
+    test('query error works', async () => {
+      const actual = await page.evaluate(async () => {
+        const res = await fetch('http://localhost:8080/graphql', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: `
+              query GetUserDetailError {
+                user {
+                  name
+                }
+              }`,
+            variables: {
+              name: 'jihchi/bs-msw',
+            },
+          }),
+        });
+        const body = await res.text();
+        return { status: res.status, body };
+      });
+
+      expect(actual).toEqual({
+        status: 200,
+        body:
+          '{"errors":[{"message":"This is a mocked error: jihchi/bs-msw","locations":[{"line":1,"column":2}]}]}',
+      });
+    });
+
+    test('mutation works', async () => {
+      const actual = await page.evaluate(async () => {
+        const res = await fetch('http://localhost:8080/graphql', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: `
+              mutation Logout {
+                logout {
+                  session
+                }
+              }`,
+            variables: {
+              referrer: 'jihchi/bs-msw',
+            },
+          }),
+        });
+        const body = await res.text();
+        return { status: res.status, body };
+      });
+
+      expect(actual).toEqual({
+        status: 200,
+        body: '{"data":{"referrer":"jihchi/bs-msw"}}',
+      });
+    });
+
+    test('mutation error works', async () => {
+      const actual = await page.evaluate(async () => {
+        const res = await fetch('http://localhost:8080/graphql', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: `
+              mutation LogoutError {
+                logout {
+                  session
+                }
+              }`,
+            variables: {
+              referrer: 'jihchi/bs-msw',
+            },
+          }),
+        });
+        const body = await res.text();
+        return { status: res.status, body };
+      });
+
+      expect(actual).toEqual({
+        status: 200,
+        body:
+          '{"errors":[{"message":"This is a mocked error: jihchi/bs-msw","locations":[{"line":1,"column":2}]}]}',
+      });
+    });
   });
 });
