@@ -4,8 +4,10 @@ open Expect;
 open MSW;
 
 describe("Node Server", () => {
+  open Node;
+
   let server =
-    setupServer([|
+    setup([|
       Mocks.Rest.get,
       Mocks.Rest.post,
       Mocks.Rest.put,
@@ -19,6 +21,8 @@ describe("Node Server", () => {
     |]);
 
   beforeAll(() => {server->listen()});
+
+  beforeEach(() => {server->resetHandlers()});
 
   afterAll(() => {server->close()});
 
@@ -222,5 +226,84 @@ describe("Node Server", () => {
            |> resolve
          });
     });
+  });
+
+  testPromise("runtime request handler", () => {
+    server->use(
+      rest
+      |> get("https://api.github.com/starred/:owner/:repo", (req, res, ctx) => {
+           let body =
+             Printf.sprintf(
+               "starred: %s/%s",
+               req.params
+               |> Js.Dict.get(_, "owner")
+               |> Option.getWithDefault(_, "N/A"),
+               req.params
+               |> Js.Dict.get(_, "repo")
+               |> Option.getWithDefault(_, "N/A"),
+             );
+
+           res
+           |> Rest.mock([|ctx |> Rest.status(200), ctx |> Rest.text(body)|]);
+         }),
+    );
+
+    Fetch.fetch("https://api.github.com/starred/jihchi/bs-msw")
+    |> then_(Fetch.Response.text)
+    |> then_(text => {
+         expect(text) |> toEqual("starred: jihchi/bs-msw") |> resolve
+       });
+  });
+
+  testPromise("permanent override", () => {
+    server->use(
+      rest
+      |> get("https://api.github.com/starred/:owner/:repo", (req, res, ctx) => {
+           let body =
+             Printf.sprintf(
+               "starred: %s/%s",
+               req.params
+               |> Js.Dict.get(_, "owner")
+               |> Option.getWithDefault(_, "N/A"),
+               req.params
+               |> Js.Dict.get(_, "repo")
+               |> Option.getWithDefault(_, "N/A"),
+             );
+
+           res
+           |> Rest.mockOnce([|
+                ctx |> Rest.status(200),
+                ctx |> Rest.text(body),
+              |]);
+         }),
+    );
+
+    Fetch.fetch("https://api.github.com/starred/jihchi/bs-msw")
+    |> then_(Fetch.Response.text)
+    |> then_(text => {
+         expect(text) |> toEqual("starred: jihchi/bs-msw") |> resolve
+       });
+  });
+
+  testPromise("restore handlers", () => {
+    server->use(
+      rest
+      |> get("https://api.github.com/repos/:owner/:repo", (_req, res, ctx) => {
+           res
+           |> Rest.mockOnce([|
+                ctx |> Rest.status(500),
+                ctx |> Rest.text("Internal server error"),
+              |])
+         }),
+    );
+
+    server->restoreHandlers();
+
+    Fetch.fetch("https://api.github.com/repos/jihchi/bs-msw")
+    |> then_(_res =>
+         Fetch.fetch("https://api.github.com/repos/jihchi/bs-msw")
+       )
+    |> then_(Fetch.Response.text)
+    |> then_(text => {expect(text) |> toEqual("jihchi/bs-msw") |> resolve});
   });
 });

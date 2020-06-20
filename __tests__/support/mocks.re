@@ -1,6 +1,8 @@
 open MSW;
 
 module Rest = {
+  open Node;
+
   let get =
     rest
     |> get("https://api.github.com/repos/:owner/:repo", (req, res, ctx) => {
@@ -111,6 +113,8 @@ module Rest = {
 };
 
 module GraphQL = {
+  open ServiceWorker;
+
   let queryOk =
     graphql
     |> query("GetUserDetail", (req, res, ctx) => {

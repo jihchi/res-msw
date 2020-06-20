@@ -7,7 +7,69 @@ describe('Service Worker', () => {
     await page.goto('http://localhost:8080', { waitUntil: 'networkidle0' });
   });
 
-  afterAll(async () => {});
+  afterEach(async () => {
+    await page.evaluate(async () => bsmsw.worker.resetHandlers());
+  });
+
+  test('runtime request handler', async () => {
+    const actual = await page.evaluate(async () => {
+      const { worker, rest } = bsmsw;
+
+      worker.use(
+        rest.get(
+          'https://api.github.com/starred/jihchi/bs-msw',
+          (_req, res, ctx) => res(ctx.text('starred: jihchi/bs-msw'))
+        )
+      );
+
+      const res = await fetch('https://api.github.com/starred/jihchi/bs-msw');
+      const body = await res.text();
+      return { status: res.status, body };
+    });
+
+    expect(actual).toEqual({ status: 200, body: 'starred: jihchi/bs-msw' });
+  });
+
+  test('permanent override', async () => {
+    const actual = await page.evaluate(async () => {
+      const { worker, rest } = bsmsw;
+
+      worker.use(
+        rest.get(
+          'https://api.github.com/starred/jihchi/bs-msw',
+          (_req, res, ctx) => res.once(ctx.text('starred: jihchi/bs-msw'))
+        )
+      );
+
+      const res = await fetch('https://api.github.com/starred/jihchi/bs-msw');
+      const body = await res.text();
+      return { status: res.status, body };
+    });
+
+    expect(actual).toEqual({ status: 200, body: 'starred: jihchi/bs-msw' });
+  });
+
+  test('restore handlers', async () => {
+    const actual = await page.evaluate(async () => {
+      const { worker, rest } = bsmsw;
+
+      worker.use(
+        rest.get(
+          'https://api.github.com/repos/jihchi/bs-msw',
+          (_req, res, ctx) =>
+            res.once(ctx.status(500), ctx.text('Internal server error'))
+        )
+      );
+      worker.restoreHandlers();
+
+      await fetch('https://api.github.com/repos/jihchi/bs-msw');
+      const res = await fetch('https://api.github.com/repos/jihchi/bs-msw');
+      const body = await res.text();
+      return { status: res.status, body };
+    });
+
+    expect(actual).toEqual({ status: 200, body: 'jihchi/bs-msw' });
+  });
 
   describe('Rest', () => {
     test('get works', async () => {

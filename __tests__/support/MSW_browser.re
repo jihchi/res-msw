@@ -1,7 +1,8 @@
 open MSW;
+open ServiceWorker;
 
 let worker =
-  setupWorker([|
+  setup([|
     Mocks.Rest.get,
     Mocks.Rest.post,
     Mocks.Rest.put,
@@ -17,11 +18,12 @@ let worker =
 worker->start();
 
 let injectToWindow = [%bs.raw
-  {|(worker) => {
+  {|(worker, rest) => {
   window.bsmsw = {
     worker,
+    rest,
   }
 }|}
 ];
 
-injectToWindow(worker);
+injectToWindow(worker, rest);
