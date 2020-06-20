@@ -28,7 +28,7 @@ Add to `bsconfig.json`
 
 ## API
 
-For more example, please refer to [`MSW_test.re`](/__tests__/MSW_test.re)
+For more example, please refer to [`MSW_node_test.re`](/__tests__/MSW_node_test.re)
 
 `MSW` is the root namespace module.
 
