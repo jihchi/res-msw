@@ -1,6 +1,20 @@
-# bs-msw [![Travis (.org)](https://img.shields.io/travis/jihchi/bs-msw)](https://travis-ci.org/jihchi/bs-msw) [![npm](https://img.shields.io/npm/v/bs-msw)](https://www.npmjs.com/package/bs-msw) [![Coveralls github](https://img.shields.io/coveralls/github/jihchi/bs-msw)](https://coveralls.io/github/jihchi/bs-msw) ![npm](https://img.shields.io/npm/dm/bs-msw) ![NPM](https://img.shields.io/npm/l/bs-msw)
+# bs-msw
+[![Travis (.org)](https://img.shields.io/travis/jihchi/bs-msw)](https://travis-ci.org/jihchi/bs-msw) [![npm](https://img.shields.io/npm/v/bs-msw)](https://www.npmjs.com/package/bs-msw) [![Coveralls github](https://img.shields.io/coveralls/github/jihchi/bs-msw)](https://coveralls.io/github/jihchi/bs-msw) ![npm](https://img.shields.io/npm/dm/bs-msw) ![NPM](https://img.shields.io/npm/l/bs-msw)
 
 > [msw](https://github.com/mswjs/msw) bindings for [BuckleScript](https://github.com/bloomberg/bucklescript) in [Reason](https://github.com/facebook/reason)
+
+
+- [Installation](#installation)
+- [Usage](#usage)
+  - [API](#api)
+    - [`Node` module](#node-module)
+    - [`ServiceWorker` module](#serviceworker-module)
+    - [`Rest` module](#rest-module)
+    - [`GraphQL` module](#graphql-module)
+    - [Example of Rest](#example-of-rest)
+    - [Example of GraphQL](#example-of-graphql)
+- [Testing the library](#testing-the-library)
+- [Contributions](#contributions)
 
 # Installation
 
@@ -192,3 +206,6 @@ this will compile and execute tests with `bs-jest`
 
 Don't hesitate to open a PR with a new binding - while bumping up the amount of covered bindings in the README.
 There are tests, use them and write the most simple test you can think of to make sure that the bindings work correctly.
+
+
+
