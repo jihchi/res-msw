@@ -1,6 +1,7 @@
 module Rest = {
   type request = {params: Js.Dict.t(string)};
   type response;
+  type realFetchResponse;
   type context;
 
   type responseTransformer;
@@ -36,7 +37,8 @@ module Rest = {
   let delay = (ms, ctx) => rawDelay(ctx, ms);
 
   [@bs.send]
-  external rawFetch: (context, request) => responseTransformer = "fetch";
+  external rawFetch: (context, request) => Js.Promise.t(realFetchResponse) =
+    "fetch";
   let fetch = (req, ctx) => rawFetch(ctx, req);
 
   [@bs.module "msw"] [@bs.val] external instance: context = "rest";
@@ -61,6 +63,7 @@ module GraphQL = {
 
   type responseTransformer;
   type response;
+  type realFetchResponse;
   type context;
 
   type completeTransformer;
@@ -96,7 +99,9 @@ module GraphQL = {
   let delay = (ms, ctx) => rawDelay(ctx, ms);
 
   [@bs.send]
-  external rawFetch: (context, request('a)) => responseTransformer = "fetch";
+  external rawFetch:
+    (context, request('a)) => Js.Promise.t(realFetchResponse) =
+    "fetch";
   let fetch = (req, ctx) => rawFetch(ctx, req);
 
   [@bs.module "msw"] [@bs.val] external instance: context = "graphql";

@@ -2,6 +2,7 @@ module Rest: {
   type request = {params: Js.Dict.t(string)};
   type responseTransformer;
   type response;
+  type realFetchResponse;
   type context;
 
   type completeTransformer;
@@ -13,7 +14,7 @@ module Rest: {
   let status: (int, context) => responseTransformer;
   let set: (string, string, context) => responseTransformer;
   let delay: (int, context) => responseTransformer;
-  let fetch: (request, context) => responseTransformer;
+  let fetch: (request, context) => Js.Promise.t(realFetchResponse);
 
   let text: (string, context) => responseTransformer;
   let json: (Js.Json.t, context) => responseTransformer;
@@ -27,6 +28,7 @@ module GraphQL: {
   };
   type responseTransformer;
   type response;
+  type realFetchResponse;
   type context;
 
   type completeTransformer;
@@ -39,7 +41,7 @@ module GraphQL: {
   let status: (int, context) => responseTransformer;
   let set: (string, string, context) => responseTransformer;
   let delay: (int, context) => responseTransformer;
-  let fetch: (request('a), context) => responseTransformer;
+  let fetch: (request('a), context) => Js.Promise.t(realFetchResponse);
 
   let data: (Js.Json.t, context) => responseTransformer;
   let errors: (array(Js.Json.t), context) => responseTransformer;
