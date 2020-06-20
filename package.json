@@ -12,7 +12,6 @@
     "build": "bsb -make-world",
     "clean": "bsb -clean-world",
     "format": "find ./src ./__tests__ -regex '.*\\.rei\\{0,1\\}' -exec bsrefmt --in-place '{}' \\;",
-    "prepublishOnly": "npm run build",
     "pretest": "npm run build",
     "start": "npm run build -- -w",
     "test": "jest"
