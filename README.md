@@ -1,5 +1,5 @@
-# bs-msw
-[![Travis (.org)](https://img.shields.io/travis/jihchi/bs-msw)](https://travis-ci.org/jihchi/bs-msw) [![npm](https://img.shields.io/npm/v/bs-msw)](https://www.npmjs.com/package/bs-msw) [![Coveralls github](https://img.shields.io/coveralls/github/jihchi/bs-msw)](https://coveralls.io/github/jihchi/bs-msw) ![npm](https://img.shields.io/npm/dm/bs-msw) ![NPM](https://img.shields.io/npm/l/bs-msw)
+# res-msw
+[![Travis (.org)](https://img.shields.io/travis/jihchi/res-msw)](https://travis-ci.org/jihchi/res-msw) [![npm](https://img.shields.io/npm/v/res-msw)](https://www.npmjs.com/package/res-msw) [![Coveralls github](https://img.shields.io/coveralls/github/jihchi/res-msw)](https://coveralls.io/github/jihchi/res-msw) ![npm](https://img.shields.io/npm/dm/res-msw) ![NPM](https://img.shields.io/npm/l/res-msw)
 
 > [msw](https://github.com/mswjs/msw) bindings for [BuckleScript](https://github.com/bloomberg/bucklescript) in [Reason](https://github.com/facebook/reason)
 
@@ -21,11 +21,11 @@
 **Prerequisite**: you have installed [msw](https://github.com/mswjs/msw).
 
 ```sh
-npm install --save-dev bs-msw
+npm install --save-dev res-msw
 
 # or ...
 
-yarn add -D bs-msw
+yarn add -D res-msw
 ```
 
 # Usage
@@ -35,7 +35,7 @@ Add to `bsconfig.json`
 ```diff
   ...
   "bs-dependencies": [
-+   "bs-msw"
++   "res-msw"
   ]
   ...
 ```

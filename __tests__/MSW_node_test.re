@@ -28,54 +28,54 @@ describe("Node Server", () => {
 
   describe("Rest", () => {
     testPromise("get works", () => {
-      Fetch.fetch("https://api.github.com/repos/jihchi/bs-msw")
+      Fetch.fetch("https://api.github.com/repos/jihchi/res-msw")
       |> then_(Fetch.Response.text)
-      |> then_(text => {expect(text) |> toEqual("jihchi/bs-msw") |> resolve})
+      |> then_(text => {expect(text) |> toEqual("jihchi/res-msw") |> resolve})
     });
 
     testPromise("post works", () => {
       Fetch.fetchWithInit(
-        "https://api.github.com/repos/jihchi/bs-msw",
+        "https://api.github.com/repos/jihchi/res-msw",
         Fetch.RequestInit.make(~method_=Post, ()),
       )
       |> then_(Fetch.Response.text)
-      |> then_(text => {expect(text) |> toEqual("jihchi/bs-msw") |> resolve})
+      |> then_(text => {expect(text) |> toEqual("jihchi/res-msw") |> resolve})
     });
 
     testPromise("put works", () => {
       Fetch.fetchWithInit(
-        "https://api.github.com/repos/jihchi/bs-msw",
+        "https://api.github.com/repos/jihchi/res-msw",
         Fetch.RequestInit.make(~method_=Put, ()),
       )
       |> then_(Fetch.Response.text)
-      |> then_(text => {expect(text) |> toEqual("jihchi/bs-msw") |> resolve})
+      |> then_(text => {expect(text) |> toEqual("jihchi/res-msw") |> resolve})
     });
 
     testPromise("patch works", () => {
       Fetch.fetchWithInit(
-        "https://api.github.com/repos/jihchi/bs-msw",
+        "https://api.github.com/repos/jihchi/res-msw",
         Fetch.RequestInit.make(~method_=Patch, ()),
       )
       |> then_(Fetch.Response.text)
-      |> then_(text => {expect(text) |> toEqual("jihchi/bs-msw") |> resolve})
+      |> then_(text => {expect(text) |> toEqual("jihchi/res-msw") |> resolve})
     });
 
     testPromise("delete works", () => {
       Fetch.fetchWithInit(
-        "https://api.github.com/repos/jihchi/bs-msw",
+        "https://api.github.com/repos/jihchi/res-msw",
         Fetch.RequestInit.make(~method_=Delete, ()),
       )
       |> then_(Fetch.Response.text)
-      |> then_(text => {expect(text) |> toEqual("jihchi/bs-msw") |> resolve})
+      |> then_(text => {expect(text) |> toEqual("jihchi/res-msw") |> resolve})
     });
 
     testPromise("options works", () => {
       Fetch.fetchWithInit(
-        "https://api.github.com/repos/jihchi/bs-msw",
+        "https://api.github.com/repos/jihchi/res-msw",
         Fetch.RequestInit.make(~method_=Options, ()),
       )
       |> then_(res => res->Fetch.Response.text)
-      |> then_(text => {expect(text) |> toEqual("jihchi/bs-msw") |> resolve})
+      |> then_(text => {expect(text) |> toEqual("jihchi/res-msw") |> resolve})
     });
   });
 
@@ -96,7 +96,7 @@ describe("Node Server", () => {
             }
           |},
           "variables": {
-            "name": "jihchi/bs-msw",
+            "name": "jihchi/res-msw",
           },
         }
         ->Js.Json.stringifyAny
@@ -115,7 +115,7 @@ describe("Node Server", () => {
       |> then_(res => res->Fetch.Response.text)
       |> then_(text => {
            expect(text)
-           |> toEqual({|{"data":{"name":"jihchi/bs-msw"}}|})
+           |> toEqual({|{"data":{"name":"jihchi/res-msw"}}|})
            |> resolve
          });
     });
@@ -131,7 +131,7 @@ describe("Node Server", () => {
             }
           |},
           "variables": {
-            "name": "jihchi/bs-msw",
+            "name": "jihchi/res-msw",
           },
         }
         ->Js.Json.stringifyAny
@@ -151,7 +151,7 @@ describe("Node Server", () => {
       |> then_(text => {
            expect(text)
            |> toEqual(
-                {|{"errors":[{"message":"This is a mocked error: jihchi/bs-msw","locations":[{"line":1,"column":2}]}]}|},
+                {|{"errors":[{"message":"This is a mocked error: jihchi/res-msw","locations":[{"line":1,"column":2}]}]}|},
               )
            |> resolve
          });
@@ -168,7 +168,7 @@ describe("Node Server", () => {
             }
           |},
           "variables": {
-            "referrer": "jihchi/bs-msw",
+            "referrer": "jihchi/res-msw",
           },
         }
         ->Js.Json.stringifyAny
@@ -187,7 +187,7 @@ describe("Node Server", () => {
       |> then_(res => res->Fetch.Response.text)
       |> then_(text => {
            expect(text)
-           |> toEqual({|{"data":{"referrer":"jihchi/bs-msw"}}|})
+           |> toEqual({|{"data":{"referrer":"jihchi/res-msw"}}|})
            |> resolve
          });
     });
@@ -203,7 +203,7 @@ describe("Node Server", () => {
             }
           |},
           "variables": {
-            "referrer": "jihchi/bs-msw",
+            "referrer": "jihchi/res-msw",
           },
         }
         ->Js.Json.stringifyAny
@@ -222,7 +222,7 @@ describe("Node Server", () => {
       |> then_(res => res->Fetch.Response.text)
       |> then_(text => {
            expect(text)
-           |> toEqual({|{"data":{"referrer":"jihchi/bs-msw"}}|})
+           |> toEqual({|{"data":{"referrer":"jihchi/res-msw"}}|})
            |> resolve
          });
     });
@@ -248,10 +248,10 @@ describe("Node Server", () => {
          }),
     );
 
-    Fetch.fetch("https://api.github.com/starred/jihchi/bs-msw")
+    Fetch.fetch("https://api.github.com/starred/jihchi/res-msw")
     |> then_(Fetch.Response.text)
     |> then_(text => {
-         expect(text) |> toEqual("starred: jihchi/bs-msw") |> resolve
+         expect(text) |> toEqual("starred: jihchi/res-msw") |> resolve
        });
   });
 
@@ -278,10 +278,10 @@ describe("Node Server", () => {
          }),
     );
 
-    Fetch.fetch("https://api.github.com/starred/jihchi/bs-msw")
+    Fetch.fetch("https://api.github.com/starred/jihchi/res-msw")
     |> then_(Fetch.Response.text)
     |> then_(text => {
-         expect(text) |> toEqual("starred: jihchi/bs-msw") |> resolve
+         expect(text) |> toEqual("starred: jihchi/res-msw") |> resolve
        });
   });
 
@@ -299,11 +299,11 @@ describe("Node Server", () => {
 
     server->restoreHandlers();
 
-    Fetch.fetch("https://api.github.com/repos/jihchi/bs-msw")
+    Fetch.fetch("https://api.github.com/repos/jihchi/res-msw")
     |> then_(_res =>
-         Fetch.fetch("https://api.github.com/repos/jihchi/bs-msw")
+         Fetch.fetch("https://api.github.com/repos/jihchi/res-msw")
        )
     |> then_(Fetch.Response.text)
-    |> then_(text => {expect(text) |> toEqual("jihchi/bs-msw") |> resolve});
+    |> then_(text => {expect(text) |> toEqual("jihchi/res-msw") |> resolve});
   });
 });

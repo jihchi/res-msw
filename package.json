@@ -1,11 +1,11 @@
 {
-  "name": "bs-msw",
-  "version": "0.4.0",
-  "description": "Mock Service Worker (MSW) bindings for BuckleScript in Reason",
-  "repository": "https://github.com/jihchi/bs-msw.git",
-  "homepage": "https://github.com/jihchi/bs-msw",
+  "name": "res-msw",
+  "version": "0.1.0",
+  "description": "Mock Service Worker (MSW) bindings for ReScript",
+  "repository": "https://github.com/jihchi/res-msw.git",
+  "homepage": "https://github.com/jihchi/res-msw",
   "bugs": {
-    "url": "https://github.com/jihchi/bs-msw/issues"
+    "url": "https://github.com/jihchi/res-msw/issues"
   },
   "scripts": {
     "dev": "webpack-dev-server",
