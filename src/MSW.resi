@@ -23,7 +23,7 @@ module Rest: {
 
 module GraphQL: {
   type request<'a> = {
-    variables: Js.t<{..} as 'a>,
+    variables: 'a,
     params: Js.Dict.t<string>,
   }
   type responseTransformer
