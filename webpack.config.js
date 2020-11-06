@@ -7,4 +7,7 @@ module.exports = {
     compress: true,
     liveReload: false,
   },
+  resolve: {
+    fallback: { timers: false, http: false, https: false, util: false },
+  },
 };
