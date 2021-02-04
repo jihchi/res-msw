@@ -1,6 +1,6 @@
 {
   "name": "res-msw",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Mock Service Worker (MSW) bindings for ReScript",
   "repository": "https://github.com/jihchi/res-msw.git",
   "homepage": "https://github.com/jihchi/res-msw",
