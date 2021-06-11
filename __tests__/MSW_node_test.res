@@ -32,14 +32,22 @@ describe("Node Server", () => {
       |> then_(text => expect(text) |> toEqual("jihchi/res-msw") |> resolve)
     )
 
-    testPromise("post works", () =>
+    testPromise("post works", () => {
+      let payload = Js.Dict.empty()
+      Js.Dict.set(payload, "language", Js.Json.string("rescript"))
+
       Fetch.fetchWithInit(
         "https://api.github.com/repos/jihchi/res-msw",
-        Fetch.RequestInit.make(~method_=Post, ()),
+        Fetch.RequestInit.make(
+          ~method_=Post,
+          ~body=Fetch.BodyInit.make(Js.Json.stringify(Js.Json.object_(payload))),
+          ~headers=Fetch.HeadersInit.make({"Content-Type": "application/json"}),
+          (),
+        ),
       )
       |> then_(Fetch.Response.text)
-      |> then_(text => expect(text) |> toEqual("jihchi/res-msw") |> resolve)
-    )
+      |> then_(text => expect(text) |> toEqual("jihchi/res-msw (rescript)") |> resolve)
+    })
 
     testPromise("put works", () =>
       Fetch.fetchWithInit(

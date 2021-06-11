@@ -15,9 +15,13 @@ module Rest = {
 
   let post = rest |> post("https://api.github.com/repos/:owner/:repo", (req, res, ctx) => {
     let body = Printf.sprintf(
-      "%s/%s",
+      "%s/%s (%s)",
       req.params |> Js.Dict.get(_, "owner") |> Option.getWithDefault(_, "N/A"),
       req.params |> Js.Dict.get(_, "repo") |> Option.getWithDefault(_, "N/A"),
+      req.body
+      |> Js.Undefined.toOption
+      |> Option.flatMap(_, body => Js.Dict.get(body, "language"))
+      |> Option.getWithDefault(_, ""),
     )
 
     res |> Rest.mock([ctx |> Rest.status(200), ctx |> Rest.text(body)])

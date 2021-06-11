@@ -86,12 +86,14 @@ describe('Service Worker', () => {
       const actual = await page.evaluate(async () => {
         const res = await fetch('https://api.github.com/repos/jihchi/res-msw', {
           method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ language: "rescript" })
         });
         const body = await res.text();
         return { status: res.status, body };
       });
 
-      expect(actual).toEqual({ status: 200, body: 'jihchi/res-msw' });
+      expect(actual).toEqual({ status: 200, body: 'jihchi/res-msw (rescript)' });
     });
 
     test('put works', async () => {
