@@ -2,35 +2,25 @@
 
 [![Travis (.org)](https://img.shields.io/travis/jihchi/res-msw)](https://travis-ci.org/jihchi/res-msw) [![npm](https://img.shields.io/npm/v/res-msw)](https://www.npmjs.com/package/res-msw) [![Coveralls github](https://img.shields.io/coveralls/github/jihchi/res-msw)](https://coveralls.io/github/jihchi/res-msw) ![npm](https://img.shields.io/npm/dm/res-msw) ![NPM](https://img.shields.io/npm/l/res-msw)
 
-> [msw](https://github.com/mswjs/msw) bindings for [BuckleScript](https://github.com/bloomberg/bucklescript) in [Reason](https://github.com/facebook/reason)
-
-- [Installation](#installation)
-- [Usage](#usage)
-  - [API](#api)
-    - [`Node` module](#node-module)
-    - [`ServiceWorker` module](#serviceworker-module)
-    - [`Rest` module](#rest-module)
-    - [`GraphQL` module](#graphql-module)
-    - [Example of Rest](#example-of-rest)
-    - [Example of GraphQL](#example-of-graphql)
-- [Testing the library](#testing-the-library)
-- [Contributions](#contributions)
+> [msw](https://github.com/mswjs/msw) bindings for [ReScript](https://rescript-lang.org/) (formerly known as [BuckleScript](https://github.com/bloomberg/bucklescript) in [Reason](https://github.com/facebook/reason))
 
 # Installation
 
 **Prerequisite**: you have installed [msw](https://github.com/mswjs/msw).
 
 ```sh
-npm install --save-dev res-msw
+npm install -D res-msw
+```
 
-# or ...
+Or if you are using yarn:
 
+```sh
 yarn add -D res-msw
 ```
 
 # Usage
 
-Add to `bsconfig.json`
+Add `res-msw` to your `bsconfig.json`:
 
 ```diff
   ...
@@ -42,7 +32,7 @@ Add to `bsconfig.json`
 
 ## API
 
-`MSW` is the root namespace module, includes following namespaces and modules:
+`MSW` is the root namespace, includes following namespaces and modules:
 
 - `rest`
 - `graphql`
@@ -102,45 +92,29 @@ Add to `bsconfig.json`
 
 ### Example of Rest
 
-For more example, please refer to [`MSW_node_test.re`](/__tests__/MSW_node_test.re) and [`mocks.re`](/__tests__/support/mocks.re).
+> For more example, please refer to [`MSW_node_test.re`](/__tests__/MSW_node_test.re) and [`mocks.re`](/__tests__/support/mocks.re).
 
 ```res
 open MSW
 
-let getRepoInfo =
-  rest |> get(
-    @reason.raw_literal("https://api.github.com/repos/:owner/:repo")
-    "https://api.github.com/repos/:owner/:repo",
-    (req, res, ctx) => {
-      let owner =
-        req.params
-        ->Js.Dict.get(@reason.raw_literal("owner") "owner")
-        ->Belt.Option.getWithDefault(@reason.raw_literal("N/A") "N/A")
-      let repo =
-        req.params
-        ->Js.Dict.get(@reason.raw_literal("repo") "repo")
-        ->Belt.Option.getWithDefault(@reason.raw_literal("N/A") "N/A")
+let getRepoInfo = rest |> get("https://api.github.com/repos/:owner/:repo", (
+  req,
+  res,
+  ctx,
+) => {
+  let {params} = req
+  let owner = params->Js.Dict.get("owner")->Belt.Option.getWithDefault("N/A")
+  let repo = params->Js.Dict.get("repo")->Belt.Option.getWithDefault("N/A")
 
-      res |> Rest.mock([
-        ctx |> Rest.status(200),
-        ctx |> Rest.text(
-          @reason.raw_literal("owner: ") "owner: " ++
-          (owner ++
-          (@reason.raw_literal(", repo: ") ", repo: " ++ repo)),
-        ),
-      ]
-    },
-  )
+  res |> Rest.mock([
+    ctx |> Rest.status(200),
+    ctx |> Rest.text(`owner: ${owner}, repo: ${repo}`),
+  ])
+})
 
 let getRepoInfoError =
-  rest |> get(
-    @reason.raw_literal("https://api.github.com/repos/:owner/:repo")
-    "https://api.github.com/repos/:owner/:repo",
-    (req, res, ctx) =>
-      res |> Rest.mock([
-        ctx |> Rest.status(500),
-        ctx |> Rest.text(@reason.raw_literal("Oops") "Oops"),
-      ]),
+  rest |> get("https://api.github.com/repos/:owner/:repo", (req, res, ctx) =>
+    res |> Rest.mock([ctx |> Rest.status(500), ctx |> Rest.text("Oops")])
   )
 
 let server = Node.setup([getRepoInfo])
@@ -150,7 +124,6 @@ server->use(getRepoInfoError)
 server->restoreHandlers()
 server->resetHandlers()
 server->close()
-)
 ```
 
 ### Example of GraphQL
@@ -160,49 +133,34 @@ For more example, please refer to [`MSW_browser.re`](/__tests__/support/MSW_brow
 ```res
 open MSW
 
-let queryUserDetail =
-  graphql |> query(
-    @reason.raw_literal("GetUserDetail") "GetUserDetail",
-    (req, res, ctx) =>
-      res |> GraphQL.mock([
-        ctx |> GraphQL.status(200),
-        ctx |> GraphQL.data(
-          Js.Dict.fromList(list{
-            (@reason.raw_literal("name") "name", req.variables["name"]),
-          }) |> Js.Json.object_,
-        ),
-      ]),
-  )
+let queryUserDetail = graphql |> query("GetUserDetail", (req, res, ctx) => {
+  let name = ("name", req.variables["name"])
+  let data = Js.Dict.fromList(list{name}) |> Js.Json.object_
 
-let queryUserDetailError =
-  graphql |> query(
-    @reason.raw_literal("GetUserDetail") "GetUserDetail",
-    (req, res, ctx) => {
-      let message = (
-        @reason.raw_literal("message") "message",
-        Js.Json.string(
-          @reason.raw_literal("This is a mocked error: ")
-          "This is a mocked error: " ++
-          req.variables["name"],
-        ),
-      )
-      let location = Js.Dict.fromList(list{
-        (@reason.raw_literal("line") "line", Js.Json.number(1.0)),
-        (@reason.raw_literal("column") "column", Js.Json.number(2.0)),
-      })
-      let locations = (
-        @reason.raw_literal("locations") "locations",
-        Js.Json.objectArray([location]),
-      )
+  res |> GraphQL.mock([ctx |> GraphQL.status(200), ctx |> GraphQL.data(data)])
+})
 
-      res |> GraphQL.mock([
-        ctx |> GraphQL.status(200),
-        ctx |> GraphQL.errors([
-          Js.Dict.fromList(list{message, locations}) |> Js.Json.object_,
-        ]),
-      ])
-    },
+let queryUserDetailError = graphql |> query("GetUserDetail", (
+  req,
+  res,
+  ctx,
+) => {
+  let message = (
+    "message",
+    Js.Json.string(`This is a mocked error: ${req.variables["name"]}`),
   )
+  let location = Js.Dict.fromList(list{
+    ("line", Js.Json.number(1.0)),
+    ("column", Js.Json.number(2.0)),
+  })
+  let locations = ("locations", Js.Json.objectArray([location]))
+  let error = Js.Dict.fromList(list{message, locations}) |> Js.Json.object_
+
+  res |> GraphQL.mock([
+    ctx |> GraphQL.status(200),
+    ctx |> GraphQL.errors([error]),
+  ])
+})
 
 let worker = ServiceWorker.setup([queryUserDetail])
 

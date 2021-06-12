@@ -46,6 +46,6 @@
     "webpack-dev-server": "^3.11.0"
   },
   "peerDependencies": {
-    "msw": "^0.21.0"
+    "msw": "^0.29.0"
   }
 }
