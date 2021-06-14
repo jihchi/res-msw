@@ -4,6 +4,7 @@ open ServiceWorker
 let worker = setup([
   Mocks.Rest.get,
   Mocks.Rest.post,
+  Mocks.Rest.postWithBody,
   Mocks.Rest.put,
   Mocks.Rest.patch,
   Mocks.Rest.delete,

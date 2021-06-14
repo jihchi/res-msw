@@ -9,6 +9,7 @@ describe("Node Server", () => {
   let server = setup([
     Mocks.Rest.get,
     Mocks.Rest.post,
+    Mocks.Rest.postWithBody,
     Mocks.Rest.put,
     Mocks.Rest.patch,
     Mocks.Rest.delete,
@@ -32,12 +33,14 @@ describe("Node Server", () => {
       |> then_(text => expect(text) |> toEqual("jihchi/res-msw") |> resolve)
     )
 
-    testPromise("post works", () => {
-      let payload = Js.Dict.empty()
-      Js.Dict.set(payload, "language", Js.Json.string("rescript"))
+    testPromise("post with request body works", () => {
+      let payload = Js.Dict.fromArray([
+        ("owner", Js.Json.string("jihchi")),
+        ("repo", Js.Json.string("res-msw")),
+      ])
 
       Fetch.fetchWithInit(
-        "https://api.github.com/repos/jihchi/res-msw",
+        "https://api.github.com/repos",
         Fetch.RequestInit.make(
           ~method_=Post,
           ~body=Fetch.BodyInit.make(Js.Json.stringify(Js.Json.object_(payload))),
@@ -46,8 +49,17 @@ describe("Node Server", () => {
         ),
       )
       |> then_(Fetch.Response.text)
-      |> then_(text => expect(text) |> toEqual("jihchi/res-msw (rescript)") |> resolve)
+      |> then_(text => expect(text) |> toEqual("jihchi/res-msw") |> resolve)
     })
+
+    testPromise("post works", () =>
+      Fetch.fetchWithInit(
+        "https://api.github.com/repos/jihchi/res-msw",
+        Fetch.RequestInit.make(~method_=Post, ()),
+      )
+      |> then_(Fetch.Response.text)
+      |> then_(text => expect(text) |> toEqual("jihchi/res-msw") |> resolve)
+    )
 
     testPromise("put works", () =>
       Fetch.fetchWithInit(
