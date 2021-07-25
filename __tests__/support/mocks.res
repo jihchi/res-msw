@@ -13,6 +13,18 @@ module Rest = {
     res |> Rest.mock([ctx |> Rest.status(200), ctx |> Rest.text(body)])
   })
 
+  let postWithBody = rest |> post("https://api.github.com/repos", (req, res, ctx) => {
+    let body = req.body |> Js.Undefined.toOption
+
+    let body = Printf.sprintf(
+      "%s/%s",
+      body |> Option.flatMap(_, body => Js.Dict.get(body, "owner")) |> Option.getWithDefault(_, ""),
+      body |> Option.flatMap(_, body => Js.Dict.get(body, "repo")) |> Option.getWithDefault(_, ""),
+    )
+
+    res |> Rest.mock([ctx |> Rest.status(200), ctx |> Rest.text(body)])
+  })
+
   let post = rest |> post("https://api.github.com/repos/:owner/:repo", (req, res, ctx) => {
     let body = Printf.sprintf(
       "%s/%s",

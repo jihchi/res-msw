@@ -1,12 +1,12 @@
 module Rest: {
-  type request = {params: Js.Dict.t<string>}
+  type request<'body> = {body: Js.Undefined.t<'body>, params: Js.Dict.t<string>}
   type responseTransformer
   type response
   type realFetchResponse
   type context
 
   type completeTransformer
-  type responseResolver = (request, response, context) => completeTransformer
+  type responseResolver<'body> = (request<'body>, response, context) => completeTransformer
 
   let mock: (array<responseTransformer>, response) => completeTransformer
   let mockOnce: (array<responseTransformer>, response) => completeTransformer
@@ -14,7 +14,7 @@ module Rest: {
   let status: (int, context) => responseTransformer
   let set: (string, string, context) => responseTransformer
   let delay: (int, context) => responseTransformer
-  let fetch: (request, context) => Js.Promise.t<realFetchResponse>
+  let fetch: (request<'body>, context) => Js.Promise.t<realFetchResponse>
 
   let text: (string, context) => responseTransformer
   let json: (Js.Json.t, context) => responseTransformer
@@ -71,10 +71,10 @@ module Node: {
   let resetHandlers: (nodeServer, unit) => unit
   let restoreHandlers: (nodeServer, unit) => unit
   let use: (nodeServer, requestHandler) => unit
-  let get: (string, Rest.responseResolver, Rest.context) => requestHandler
-  let post: (string, Rest.responseResolver, Rest.context) => requestHandler
-  let put: (string, Rest.responseResolver, Rest.context) => requestHandler
-  let patch: (string, Rest.responseResolver, Rest.context) => requestHandler
-  let delete: (string, Rest.responseResolver, Rest.context) => requestHandler
-  let options: (string, Rest.responseResolver, Rest.context) => requestHandler
+  let get: (string, Rest.responseResolver<'body>, Rest.context) => requestHandler
+  let post: (string, Rest.responseResolver<'body>, Rest.context) => requestHandler
+  let put: (string, Rest.responseResolver<'body>, Rest.context) => requestHandler
+  let patch: (string, Rest.responseResolver<'body>, Rest.context) => requestHandler
+  let delete: (string, Rest.responseResolver<'body>, Rest.context) => requestHandler
+  let options: (string, Rest.responseResolver<'body>, Rest.context) => requestHandler
 }

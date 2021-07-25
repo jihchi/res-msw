@@ -9,6 +9,7 @@ describe("Node Server", () => {
   let server = setup([
     Mocks.Rest.get,
     Mocks.Rest.post,
+    Mocks.Rest.postWithBody,
     Mocks.Rest.put,
     Mocks.Rest.patch,
     Mocks.Rest.delete,
@@ -31,6 +32,25 @@ describe("Node Server", () => {
       |> then_(Fetch.Response.text)
       |> then_(text => expect(text) |> toEqual("jihchi/res-msw") |> resolve)
     )
+
+    testPromise("post with request body works", () => {
+      let payload = Js.Dict.fromArray([
+        ("owner", Js.Json.string("jihchi")),
+        ("repo", Js.Json.string("res-msw")),
+      ])
+
+      Fetch.fetchWithInit(
+        "https://api.github.com/repos",
+        Fetch.RequestInit.make(
+          ~method_=Post,
+          ~body=Fetch.BodyInit.make(Js.Json.stringify(Js.Json.object_(payload))),
+          ~headers=Fetch.HeadersInit.make({"Content-Type": "application/json"}),
+          (),
+        ),
+      )
+      |> then_(Fetch.Response.text)
+      |> then_(text => expect(text) |> toEqual("jihchi/res-msw") |> resolve)
+    })
 
     testPromise("post works", () =>
       Fetch.fetchWithInit(

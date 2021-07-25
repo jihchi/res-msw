@@ -1,12 +1,12 @@
 module Rest = {
-  type request = {params: Js.Dict.t<string>}
+  type request<'body> = {body: Js.Undefined.t<'body>, params: Js.Dict.t<string>}
   type response
   type realFetchResponse
   type context
 
   type responseTransformer
   type completeTransformer
-  type responseResolver = (request, response, context) => completeTransformer
+  type responseResolver<'body> = (request<'body>, response, context) => completeTransformer
 
   let mock: (array<responseTransformer>, response) => completeTransformer = %raw(
     `
@@ -37,7 +37,7 @@ module Rest = {
   let delay = (ms, ctx) => rawDelay(ctx, ms)
 
   @bs.send
-  external rawFetch: (context, request) => Js.Promise.t<realFetchResponse> = "fetch"
+  external rawFetch: (context, request<'body>) => Js.Promise.t<realFetchResponse> = "fetch"
   let fetch = (req, ctx) => rawFetch(ctx, req)
 
   @bs.module("msw") @bs.val external instance: context = "rest"
@@ -164,32 +164,35 @@ module Node = {
   @bs.send external use: (nodeServer, requestHandler) => unit = "use"
 
   @bs.send
-  external rawGet: (Rest.context, string, Rest.responseResolver) => requestHandler = "get"
+  external rawGet: (Rest.context, string, Rest.responseResolver<'body>) => requestHandler = "get"
 
   let get = (url, resolver, ctx) => rawGet(ctx, url, resolver)
 
   @bs.send
-  external rawPost: (Rest.context, string, Rest.responseResolver) => requestHandler = "post"
+  external rawPost: (Rest.context, string, Rest.responseResolver<'body>) => requestHandler = "post"
 
   let post = (url, resolver, ctx) => rawPost(ctx, url, resolver)
 
   @bs.send
-  external rawPut: (Rest.context, string, Rest.responseResolver) => requestHandler = "put"
+  external rawPut: (Rest.context, string, Rest.responseResolver<'body>) => requestHandler = "put"
 
   let put = (url, resolver, ctx) => rawPut(ctx, url, resolver)
 
   @bs.send
-  external rawPatch: (Rest.context, string, Rest.responseResolver) => requestHandler = "patch"
+  external rawPatch: (Rest.context, string, Rest.responseResolver<'body>) => requestHandler =
+    "patch"
 
   let patch = (url, resolver, ctx) => rawPatch(ctx, url, resolver)
 
   @bs.send
-  external rawDelete: (Rest.context, string, Rest.responseResolver) => requestHandler = "delete"
+  external rawDelete: (Rest.context, string, Rest.responseResolver<'body>) => requestHandler =
+    "delete"
 
   let delete = (url, resolver, ctx) => rawDelete(ctx, url, resolver)
 
   @bs.send
-  external rawOptions: (Rest.context, string, Rest.responseResolver) => requestHandler = "options"
+  external rawOptions: (Rest.context, string, Rest.responseResolver<'body>) => requestHandler =
+    "options"
 
   let options = (url, resolver, ctx) => rawOptions(ctx, url, resolver)
 }

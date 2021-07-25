@@ -82,10 +82,24 @@ describe('Service Worker', () => {
       expect(actual).toEqual({ status: 200, body: 'jihchi/res-msw' });
     });
 
+    test('post with request body works', async () => {
+      const actual = await page.evaluate(async () => {
+        const res = await fetch('https://api.github.com/repos/jihchi/res-msw', {
+          method: 'POST',
+          body: JSON.stringify({ owner: "jihchi", repo: "res-msw" })
+        });
+        const body = await res.text();
+        return { status: res.status, body };
+      });
+
+      expect(actual).toEqual({ status: 200, body: 'jihchi/res-msw' });
+    })
+
     test('post works', async () => {
       const actual = await page.evaluate(async () => {
         const res = await fetch('https://api.github.com/repos/jihchi/res-msw', {
           method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
         });
         const body = await res.text();
         return { status: res.status, body };
