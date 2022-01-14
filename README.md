@@ -32,7 +32,7 @@ Add `res-msw` to your `bsconfig.json`:
 
 ## API
 
-`MSW` is the root namespace, includes following namespaces and modules:
+`ResMsW.MSW` is the root namespace, includes following namespaces and modules:
 
 - `rest`
 - `graphql`
@@ -95,7 +95,7 @@ Add `res-msw` to your `bsconfig.json`:
 > For more example, please refer to [`MSW_node_test.re`](/__tests__/MSW_node_test.re) and [`mocks.re`](/__tests__/support/mocks.re).
 
 ```res
-open MSW
+open ResMsw.MSW
 
 let getRepoInfo = rest |> get("https://api.github.com/repos/:owner/:repo", (
   req,
@@ -131,7 +131,7 @@ server->close()
 For more example, please refer to [`MSW_browser.re`](/__tests__/support/MSW_browser.re) and [`mocks.re`](/__tests__/support/mocks.re).
 
 ```res
-open MSW
+open ResMsw.MSW
 
 let queryUserDetail = graphql |> query("GetUserDetail", (req, res, ctx) => {
   let name = ("name", req.variables["name"])
