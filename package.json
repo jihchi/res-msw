@@ -33,7 +33,7 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "@glennsl/bs-jest": "^0.5.1",
+    "@glennsl/bs-jest": "^0.7.0",
     "bs-fetch": "^0.6.2",
     "bs-platform": "^8.2.0",
     "jest": "^26.4.2",
