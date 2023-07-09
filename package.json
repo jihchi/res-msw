@@ -37,7 +37,7 @@
     "bs-fetch": "^0.6.2",
     "bs-platform": "^8.2.0",
     "jest": "^26.4.2",
-    "jest-puppeteer": "^4.4.0",
+    "jest-puppeteer": "^9.0.0",
     "msw": "^0.29.0",
     "node-fetch": "^3.1.1",
     "puppeteer": "^5.2.1",
